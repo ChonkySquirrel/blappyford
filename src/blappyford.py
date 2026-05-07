@@ -30,7 +30,7 @@ class WallPair():
     def __init__(self):
         self.topheight = random.randrange(100,500)
         self.botheight = HEIGHT
-        while (HEIGHT-self.botheight > self.topheight + 60):
+        while (HEIGHT-self.botheight < self.topheight + 60):
             self.botheight = random.randrange(100,500)
         self.walls = []
         self._makewallpair()
