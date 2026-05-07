@@ -19,7 +19,7 @@ class Wall():
         self.pos[0] -= self.speed*dt   
         self._rect = pygame.Rect(self.pos[0],self.pos[1],WIDTH/30,self.height)
 
-    def _is_offscreen(self):
+    def is_offscreen(self):
         wall_is_offscreen = (self.pos[0] <= 0)
         return wall_is_offscreen
 
@@ -42,6 +42,9 @@ class WallPair():
     def update(self,dt):
         for wall in self.walls:
             wall.update(dt)
+
+    def _is_offscreen(self):
+        return self.walls[0].is_offscreen()
     
     def draw(self,surface):
         for wall in self.walls:
