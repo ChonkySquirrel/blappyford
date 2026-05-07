@@ -11,12 +11,13 @@ SCREEN_COLOR = (0,0,0)
 class BottomWall():
     def __init__(self):
         self.height = 200
-        self.speed = 5
-        self.pos = ((WIDTH,HEIGHT-self.height))
+        self.speed = 100
+        self.pos = ([WIDTH,HEIGHT-self.height])
         self._rect = pygame.Rect(self.pos[0],self.pos[1],WIDTH/20,self.height)
 
     def update (self,dt):
         self.pos[0] -= self.speed*dt   
+        self._rect = pygame.Rect(self.pos[0],self.pos[1],WIDTH/30,self.height)
 
     def _is_offscreen(self):
         wall_is_offscreen = (self.pos[0] <= 0)
@@ -47,7 +48,7 @@ def main():
         screen.fill(SCREEN_COLOR)
         wall.draw(screen)
         pygame.display.flip()
-        dt = clock.tick(30)
+        dt = clock.tick(30)/1000.0
 
     pygame.quit()
 
