@@ -40,11 +40,11 @@ class WallPair():
         self.walls.append(Wall(self.botheight,HEIGHT-self.botheight))
     
     def update(self,dt):
-        for wall in self.walls():
+        for wall in self.walls:
             wall.update(dt)
     
     def draw(self,surface):
-        for wall in self.walls():
+        for wall in self.walls:
             wall.draw(surface)
 
 def main():
