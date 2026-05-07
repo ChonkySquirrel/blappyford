@@ -34,9 +34,9 @@ class WallPair():
         while (HEIGHT-self.botheight < self.topheight + 60):
             self.botheight = random.randrange(100,MAX_WALL_SIZE)
         self.walls = []
-        self._makewallpair()
+        self._make_wall_pair()
 
-    def _makewallpair(self):
+    def _make_wall_pair(self):
         self.walls.append(Wall(self.topheight,0))
         self.walls.append(Wall(self.botheight,HEIGHT-self.botheight))
     
@@ -44,7 +44,7 @@ class WallPair():
         for wall in self.walls:
             wall.update(dt)
 
-    def _is_offscreen(self):
+    def is_offscreen(self):
         return self.walls[0].is_offscreen()
     
     def draw(self,surface):
@@ -58,7 +58,8 @@ def main():
     clock = pygame.time.Clock()
     font = pygame.font.Font(None,24)
     dt = 0
-    walls = WallPair()
+    walls = []
+    spawn_timer = 0.0
 
     running = True
     while running:
@@ -67,7 +68,18 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
         # Game Logic
-        walls.update(dt)
+
+        spawn_timer += dt
+        if spawn_timer >= 2:
+            spawn_timer = 0.0
+            walls.append(WallPair)
+        
+        for idx, wall in enumerate(walls):
+            wall.update(dt)
+            if wall.is_offscreen():
+                del walls[idx]
+
+        
         # Render & Display
         screen.fill(SCREEN_COLOR)
         walls.draw(screen)
