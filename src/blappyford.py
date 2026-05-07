@@ -82,7 +82,8 @@ def main():
         
         # Render & Display
         screen.fill(SCREEN_COLOR)
-        walls.draw(screen)
+        for wall in walls:
+            wall.draw(screen)
         pygame.display.flip()
         dt = clock.tick(30)/1000.0
 
