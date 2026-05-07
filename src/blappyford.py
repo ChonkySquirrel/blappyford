@@ -7,6 +7,7 @@ import random
 WIDTH = 1080
 HEIGHT = 720
 SCREEN_COLOR = (0,0,0)
+MAX_WALL_SIZE = HEIGHT-100
 
 class Wall():
     def __init__(self, height, altitude):
@@ -28,10 +29,10 @@ class Wall():
 
 class WallPair():
     def __init__(self):
-        self.topheight = random.randrange(100,500)
+        self.topheight = random.randrange(100,MAX_WALL_SIZE)
         self.botheight = HEIGHT
         while (HEIGHT-self.botheight < self.topheight + 60):
-            self.botheight = random.randrange(100,500)
+            self.botheight = random.randrange(100,MAX_WALL_SIZE)
         self.walls = []
         self._makewallpair()
 
