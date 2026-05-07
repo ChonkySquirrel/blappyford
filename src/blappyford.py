@@ -40,7 +40,7 @@ class WallPair():
         self.walls.append(Wall(self.topheight,0))
         self.walls.append(Wall(self.botheight,HEIGHT-self.botheight))
     
-    def update(self,dt):
+    def update_walls(self,dt):
         for wall in self.walls:
             wall.update(dt)
 
@@ -57,7 +57,7 @@ def main():
     screen = pygame.display.set_mode((WIDTH,HEIGHT))
     clock = pygame.time.Clock()
     font = pygame.font.Font(None,24)
-    dt = 0
+    dt = 0.0
     walls = []
     spawn_timer = 0.0
 
@@ -72,13 +72,11 @@ def main():
         spawn_timer += dt
         if spawn_timer >= 2:
             spawn_timer = 0.0
-            walls.append(WallPair)
+            walls.append(WallPair())
+            print("Hi New Guy!")
         
-        for idx, wall in enumerate(walls):
-            wall.update(dt)
-            if wall.is_offscreen():
-                del walls[idx]
-
+        for wall in walls:
+            wall.update_walls(dt)
         
         # Render & Display
         screen.fill(SCREEN_COLOR)
