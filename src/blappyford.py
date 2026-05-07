@@ -30,9 +30,7 @@ class Wall():
 class WallPair():
     def __init__(self):
         self.topheight = random.randrange(100,MAX_WALL_SIZE)
-        self.botheight = HEIGHT
-        while (HEIGHT-self.botheight < self.topheight + 60):
-            self.botheight = random.randrange(100,MAX_WALL_SIZE)
+        self.botheight = HEIGHT - self.topheight - 200
         self.walls = []
         self._make_wall_pair()
 
@@ -59,7 +57,7 @@ def main():
     font = pygame.font.Font(None,24)
     dt = 0.0
     walls = []
-    spawn_timer = 0.0
+    spawn_timer = 4
 
     running = True
     while running:
@@ -70,14 +68,17 @@ def main():
         # Game Logic
 
         spawn_timer += dt
-        if spawn_timer >= 2:
+        if spawn_timer >= 4:
             spawn_timer = 0.0
             walls.append(WallPair())
             print("Hi New Guy!")
         
-        for wall in walls:
+        for idx, wall in enumerate(walls):  
+            if wall.is_offscreen():
+                del walls[idx]
+                walls[idx].update_walls(dt)
             wall.update_walls(dt)
-        
+         
         # Render & Display
         screen.fill(SCREEN_COLOR)
         for wall in walls:
