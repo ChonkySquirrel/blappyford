@@ -12,16 +12,16 @@ MAX_WALL_SIZE = HEIGHT-100
 class Player():
     def __init__(self):
         x = WIDTH//30
-        y = HEIGHT-20//2
+        y = HEIGHT//2
         self.rect = pygame.Rect(x,y, 20,20)
-        self.spdx = 50
+        self.spdx = 180
         self.vely = 0
-        self.jump_force = 40
-        self.gravity = 5
+        self.jump_force = 8
+        self.gravity = 15
     
     def update(self, keys, dt):
         dx = 0.0
-        self.vely -= 10*dt
+        self.vely -= self.gravity*dt
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
             dx -= self.spdx * dt
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
@@ -29,8 +29,8 @@ class Player():
         if keys[pygame.K_UP] or keys[pygame.K_w]:
             self.vely = self.jump_force
         self.rect.x = int(round(self.rect.x + dx))
-        self.rect.y = int(round(self.rect.y + self.vely))
-        self.rect.clamp_ip(pygame.Rect(0,0), WIDTH, HEIGHT)
+        self.rect.y = int(round(self.rect.y - self.vely))
+        self.rect.clamp_ip(pygame.Rect(0,0, WIDTH, HEIGHT))
 
     def draw(self, surface):
         pygame.draw.rect(surface, (0,255,0), self.rect, border_radius = 2)
