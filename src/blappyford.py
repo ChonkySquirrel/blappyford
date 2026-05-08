@@ -21,11 +21,13 @@ class Player():
         self.vely = 0
         self.jump_force = 8
         self.gravity = 15
+        self.jumpsound = pygame.mixer.Sound("jumpsound.wav")
     
     def _is_jumping (self, events):
         for event in events:
              if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP or event.key == pygame.K_w or event.key == pygame.K_SPACE:
+                    self.jumpsound.play()
                     return True
         return False
 
@@ -119,11 +121,14 @@ class WallPair():
 
 def main():
     pygame.init()
+    pygame.mixer.init()
     pygame.display.set_caption("Adventures of Blappyford")
     screen = pygame.display.set_mode((WIDTH,HEIGHT))
     clock = pygame.time.Clock()
     font = pygame.font.Font(None,24)
     dt = 0.0
+    pointsound = pygame.mixer.Sound("pointget.wav")
+    deathsound = pygame.mixer.Sound("deathsound.wav")
     walls = []
     spawn_timer = 4
     points = 0
@@ -163,12 +168,14 @@ def main():
                 if player.rect.x >= wall.pos and wall.can_give_points():
                     wall.clear()
                     points += 1
+                    pointsound.play()
                     print (f"Point earned! Now at {points} points!")
                 wall.update_walls(dt)
             for wall in walls:
                 for rect in wall.rects:
                     if player.rect.colliderect(rect):
                         game_over = True
+                        deathsound.play()
                         print("OUCH!")
                         break
          
