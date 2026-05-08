@@ -84,7 +84,7 @@ class WallPair():
             wall.update(dt)
             self.rects[idx] = wall.rect
             self.pos = wall.pos[0]
-            idx += 0
+            idx += 1
 
     def can_give_points(self):
         if self.cleared == False:
