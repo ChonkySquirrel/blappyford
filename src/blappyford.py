@@ -19,15 +19,22 @@ class Player():
         self.jump_force = 8
         self.gravity = 15
     
-    def update(self, keys, dt):
+    def _is_jumping (self, events):
+        for event in events:
+             if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP or event.key == pygame.K_w:
+                    return True
+        return False
+
+    def update(self, keys, tap, dt):
         dx = 0.0
         self.vely -= self.gravity*dt
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
             dx -= self.spdx * dt
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
             dx += self.spdx * dt
-        if keys[pygame.K_UP] or keys[pygame.K_w]:
-            self.vely = self.jump_force
+        if self._is_jumping(tap):
+                self.vely = self.jump_force
         self.rect.x = int(round(self.rect.x + dx))
         self.rect.y = int(round(self.rect.y - self.vely))
         self.rect.clamp_ip(pygame.Rect(0,0, WIDTH, HEIGHT))
@@ -92,12 +99,13 @@ def main():
     while running:
         # Event Loop
         keys = pygame.key.get_pressed()
-        for event in pygame.event.get():
+        inputs = pygame.event.get()
+        for event in inputs:
             if event.type == pygame.QUIT:
                 running = False
         # Game Logic
 
-        player.update(keys,dt)
+        player.update(keys,inputs,dt)
 
         spawn_timer += dt
         if spawn_timer >= 4:
