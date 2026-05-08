@@ -8,6 +8,9 @@ WIDTH = 1080
 HEIGHT = 720
 SCREEN_COLOR = (0,0,0)
 MAX_WALL_SIZE = HEIGHT-100
+MAX_WALL_SPEED = 200
+MIN_WALL_GAP = 70
+MIN_SPAWN_TIME = 1.6
 
 class Player():
     def __init__(self):
@@ -45,11 +48,16 @@ class Player():
 
 
 class Wall():
-    def __init__(self, height, altitude):
+    def __init__(self, height, altitude, points):
         self.height = height
-        self.speed = 100
+        self.speed = 100 + points*2
+        self._speed_snap()
         self.pos = ([WIDTH,altitude])
         self.rect = pygame.Rect(self.pos[0],self.pos[1],WIDTH/20,self.height)
+    
+    def _speed_snap(self):
+        if self.speed > MAX_WALL_SPEED:
+            self.speed = MAX_WALL_SPEED
 
     def update (self,dt):
         self.pos[0] -= self.speed*dt   
@@ -63,19 +71,26 @@ class Wall():
         pygame.draw.rect(surface,(255,0,0),self.rect)
 
 class WallPair():
-    def __init__(self):
+    def __init__(self,points):
+        self.diff = points
+        self.gap = 200 - points*2
+        self._gap_snap()
         self.topheight = random.randrange(100,MAX_WALL_SIZE)
-        self.botheight = HEIGHT - self.topheight - 200
+        self.botheight = HEIGHT - self.topheight - self.gap
         self.walls = []
         self.rects = []
         self.cleared = False
         self.pos = WIDTH
         self._make_wall_pair()
+    
+    def _gap_snap(self):
+        if self.gap < MIN_WALL_GAP:
+            self.gap = MIN_WALL_GAP
 
     def _make_wall_pair(self):
-        self.walls.append(Wall(self.topheight,0))
+        self.walls.append(Wall(self.topheight,0,self.diff))
         self.rects.append(self.walls[0].rect)
-        self.walls.append(Wall(self.botheight,HEIGHT-self.botheight))
+        self.walls.append(Wall(self.botheight,HEIGHT-self.botheight,self.diff))
         self.rects.append(self.walls[1].rect)
     
     def update_walls(self,dt):
@@ -114,7 +129,7 @@ def main():
     points = 0
     player = Player()
     game_over = False
-
+    spawn_interval = 4
     running = True
     while running:
         # Event Loop
@@ -134,11 +149,12 @@ def main():
         # Game Logic
         if not game_over:
             player.update(keys,inputs,dt)
-
+            if spawn_interval >= MIN_SPAWN_TIME:
+                spawn_interval = 4 - (0.2*(points//5))
             spawn_timer += dt
-            if spawn_timer >= 4:
+            if spawn_timer >= spawn_interval:
                 spawn_timer = 0.0
-                walls.append(WallPair())
+                walls.append(WallPair(points))
             
             for idx, wall in enumerate(walls):
                 if wall.is_offscreen():
