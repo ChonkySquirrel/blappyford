@@ -67,6 +67,8 @@ class WallPair():
         self.topheight = random.randrange(100,MAX_WALL_SIZE)
         self.botheight = HEIGHT - self.topheight - 200
         self.walls = []
+        self.cleared = False
+        self.pos = WIDTH
         self._make_wall_pair()
 
     def _make_wall_pair(self):
@@ -76,6 +78,16 @@ class WallPair():
     def update_walls(self,dt):
         for wall in self.walls:
             wall.update(dt)
+            self.pos = wall.pos[0]
+
+    def can_give_points(self):
+        if self.cleared == False:
+            return True
+        return False
+
+    def clear(self):
+        print("Obstacle Cleared!")
+        self.cleared = True
 
     def is_offscreen(self):
         return self.walls[0].is_offscreen()
@@ -93,6 +105,7 @@ def main():
     dt = 0.0
     walls = []
     spawn_timer = 4
+    points = 0
     player = Player()
 
     running = True
@@ -112,10 +125,14 @@ def main():
             spawn_timer = 0.0
             walls.append(WallPair())
         
-        for idx, wall in enumerate(walls):  
+        for idx, wall in enumerate(walls):
             if wall.is_offscreen():
                 del walls[idx]
                 walls[idx].update_walls(dt)
+            if player.rect.x >= wall.pos and wall.can_give_points():
+                wall.clear()
+                points += 1
+                print (f"Point earned! Now at {points} points!")
             wall.update_walls(dt)
          
         # Render & Display
