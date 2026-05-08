@@ -123,6 +123,14 @@ def main():
         for event in inputs:
             if event.type == pygame.QUIT:
                 running = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP or event.key == pygame.K_w or event.key == pygame.K_SPACE:
+                    if game_over:
+                        player = Player()
+                        walls = []
+                        points = 0
+                        spawn_timer = 4
+                        game_over = False
         # Game Logic
         if not game_over:
             player.update(keys,inputs,dt)
