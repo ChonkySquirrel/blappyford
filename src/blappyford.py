@@ -128,6 +128,8 @@ def main():
     screen = pygame.display.set_mode((WIDTH,HEIGHT))
     clock = pygame.time.Clock()
     font = pygame.font.Font(None,24)
+    font_large = pygame.font.Font(None,36)
+    font_huge = pygame.font.Font(None,48)
     dt = 0.0
     pointsound = pygame.mixer.Sound("pointget.wav")
     deathsound = pygame.mixer.Sound("deathsound.wav")
@@ -183,6 +185,11 @@ def main():
          
         # Render & Display
         screen.fill(SCREEN_COLOR)
+        if not game_over:
+            score = font_huge.render(f"SCORE: {points}",True,(255,255,255))
+            controls = font.render("Arrows / AD to move - Jump with Space / W / Up",True,(120,120,120))
+            screen.blit(controls, (12, 12))
+            screen.blit(score, (WIDTH/5*4,24))
         for wall in walls:
             wall.draw(screen)
         player.draw(screen)
