@@ -72,7 +72,7 @@ class Wall():
         return wall_is_offscreen
 
     def draw(self,surface):
-        pygame.draw.rect(surface,(255,0,0),self.rect)
+        pygame.draw.rect(surface,(200,0,0),self.rect)
 
 class WallPair():
     def __init__(self,points):
@@ -185,14 +185,18 @@ def main():
          
         # Render & Display
         screen.fill(SCREEN_COLOR)
-        if not game_over:
-            score = font_huge.render(f"SCORE: {points}",True,(255,255,255))
-            controls = font.render("Arrows / AD to move - Jump with Space / W / Up",True,(120,120,120))
-            screen.blit(controls, (12, 12))
-            screen.blit(score, (WIDTH/5*4,24))
         for wall in walls:
             wall.draw(screen)
         player.draw(screen)
+        if not game_over:
+            score = font_huge.render(f"SCORE: {points}",True,(255,255,255))
+            score_back_width = 160 + 20*(len(str(points)))
+            score_back = pygame.Rect((WIDTH/5*4)-10,4,score_back_width,68)
+            controls = font.render("Arrows / AD to move - Jump with Space / W / Up",True,(120,120,120))
+            screen.blit(controls, (12, 12))
+            pygame.draw.rect(screen,(45,45,45),score_back,border_radius=3)
+            screen.blit(score, (WIDTH/5*4,24))
+
         pygame.display.flip()
         dt = clock.tick(30)/1000.0
 
