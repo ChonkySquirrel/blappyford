@@ -9,6 +9,34 @@ HEIGHT = 720
 SCREEN_COLOR = (0,0,0)
 MAX_WALL_SIZE = HEIGHT-100
 
+class Player():
+    def __init__(self):
+        x = WIDTH//30
+        y = HEIGHT-20//2
+        self.rect = pygame.Rect(x,y, 20,20)
+        self.spdx = 50
+        self.vely = 0
+        self.jump_force = 40
+        self.gravity = 5
+    
+    def update(self, keys, dt):
+        dx = 0.0
+        self.vely -= 10*dt
+        if keys[pygame.K_LEFT] or keys[pygame.K_a]:
+            dx -= self.spdx * dt
+        if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+            dx += self.spdx * dt
+        if keys[pygame.K_UP] or keys[pygame.K_w]:
+            self.vely = self.jump_force
+        self.rect.x = int(round(self.rect.x + dx))
+        self.rect.y = int(round(self.rect.y + self.vely))
+        self.rect.clamp_ip(pygame.Rect(0,0 WIDTH, HEIGHT))
+
+    def draw(self, surface):
+        pygame.draw.rect(surface, (0,255,0), self.rect, border_radius = 2)
+        
+
+
 class Wall():
     def __init__(self, height, altitude):
         self.height = height
@@ -58,20 +86,23 @@ def main():
     dt = 0.0
     walls = []
     spawn_timer = 4
+    player = Player()
 
     running = True
     while running:
         # Event Loop
+        keys = pygame.key.get_pressed()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
         # Game Logic
 
+        player.update(keys,dt)
+
         spawn_timer += dt
         if spawn_timer >= 4:
             spawn_timer = 0.0
             walls.append(WallPair())
-            print("Hi New Guy!")
         
         for idx, wall in enumerate(walls):  
             if wall.is_offscreen():
@@ -83,6 +114,7 @@ def main():
         screen.fill(SCREEN_COLOR)
         for wall in walls:
             wall.draw(screen)
+        player.draw(screen)
         pygame.display.flip()
         dt = clock.tick(30)/1000.0
 
