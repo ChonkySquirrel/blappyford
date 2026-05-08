@@ -49,36 +49,42 @@ class Wall():
         self.height = height
         self.speed = 100
         self.pos = ([WIDTH,altitude])
-        self._rect = pygame.Rect(self.pos[0],self.pos[1],WIDTH/20,self.height)
+        self.rect = pygame.Rect(self.pos[0],self.pos[1],WIDTH/20,self.height)
 
     def update (self,dt):
         self.pos[0] -= self.speed*dt   
-        self._rect = pygame.Rect(self.pos[0],self.pos[1],WIDTH/30,self.height)
+        self.rect = pygame.Rect(self.pos[0],self.pos[1],WIDTH/30,self.height)
 
     def is_offscreen(self):
         wall_is_offscreen = (self.pos[0] <= 0)
         return wall_is_offscreen
 
     def draw(self,surface):
-        pygame.draw.rect(surface,(255,0,0),self._rect)
+        pygame.draw.rect(surface,(255,0,0),self.rect)
 
 class WallPair():
     def __init__(self):
         self.topheight = random.randrange(100,MAX_WALL_SIZE)
         self.botheight = HEIGHT - self.topheight - 200
         self.walls = []
+        self.rects = []
         self.cleared = False
         self.pos = WIDTH
         self._make_wall_pair()
 
     def _make_wall_pair(self):
         self.walls.append(Wall(self.topheight,0))
+        self.rects.append(self.walls[0].rect)
         self.walls.append(Wall(self.botheight,HEIGHT-self.botheight))
+        self.rects.append(self.walls[1].rect)
     
     def update_walls(self,dt):
+        idx = 0
         for wall in self.walls:
             wall.update(dt)
+            self.rects[idx] = wall.rect
             self.pos = wall.pos[0]
+            idx += 0
 
     def can_give_points(self):
         if self.cleared == False:
@@ -107,6 +113,7 @@ def main():
     spawn_timer = 4
     points = 0
     player = Player()
+    game_over = False
 
     running = True
     while running:
@@ -117,23 +124,29 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
         # Game Logic
+        if not game_over:
+            player.update(keys,inputs,dt)
 
-        player.update(keys,inputs,dt)
-
-        spawn_timer += dt
-        if spawn_timer >= 4:
-            spawn_timer = 0.0
-            walls.append(WallPair())
-        
-        for idx, wall in enumerate(walls):
-            if wall.is_offscreen():
-                del walls[idx]
-                walls[idx].update_walls(dt)
-            if player.rect.x >= wall.pos and wall.can_give_points():
-                wall.clear()
-                points += 1
-                print (f"Point earned! Now at {points} points!")
-            wall.update_walls(dt)
+            spawn_timer += dt
+            if spawn_timer >= 4:
+                spawn_timer = 0.0
+                walls.append(WallPair())
+            
+            for idx, wall in enumerate(walls):
+                if wall.is_offscreen():
+                    del walls[idx]
+                    walls[idx].update_walls(dt)
+                if player.rect.x >= wall.pos and wall.can_give_points():
+                    wall.clear()
+                    points += 1
+                    print (f"Point earned! Now at {points} points!")
+                wall.update_walls(dt)
+            for wall in walls:
+                for rect in wall.rects:
+                    if player.rect.colliderect(rect):
+                        game_over = True
+                        print("OUCH!")
+                        break
          
         # Render & Display
         screen.fill(SCREEN_COLOR)
