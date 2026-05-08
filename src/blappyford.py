@@ -1,8 +1,6 @@
 import pygame
 import math
 import random
-import glob
-import os
 
 # Constants
 
@@ -188,6 +186,11 @@ def main():
         for wall in walls:
             wall.draw(screen)
         player.draw(screen)
+        if game_over:
+            overlay_back = pygame.Rect(WIDTH/5,HEIGHT/5*2,WIDTH*0.6,HEIGHT*0.2)
+            pygame.draw.rect(screen,(0,0,0),overlay_back,border_radius = 6)
+            game_overlay = font_large.render(f"GAME OVER - FINAL SCORE: {points} - JUMP TO RESTART",True,(255,255,255))
+            screen.blit(game_overlay,game_overlay.get_rect(center=(WIDTH//2,HEIGHT//2)))
         if not game_over:
             score = font_huge.render(f"SCORE: {points}",True,(255,255,255))
             score_back_width = 160 + 20*(len(str(points)))
@@ -196,7 +199,6 @@ def main():
             screen.blit(controls, (12, 12))
             pygame.draw.rect(screen,(45,45,45),score_back,border_radius=3)
             screen.blit(score, (WIDTH/5*4,24))
-
         pygame.display.flip()
         dt = clock.tick(30)/1000.0
 
