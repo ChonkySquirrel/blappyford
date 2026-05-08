@@ -30,7 +30,7 @@ class Player():
             self.vely = self.jump_force
         self.rect.x = int(round(self.rect.x + dx))
         self.rect.y = int(round(self.rect.y + self.vely))
-        self.rect.clamp_ip(pygame.Rect(0,0 WIDTH, HEIGHT))
+        self.rect.clamp_ip(pygame.Rect(0,0), WIDTH, HEIGHT)
 
     def draw(self, surface):
         pygame.draw.rect(surface, (0,255,0), self.rect, border_radius = 2)
