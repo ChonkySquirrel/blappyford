@@ -22,7 +22,7 @@ class Player():
     def _is_jumping (self, events):
         for event in events:
              if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_UP or event.key == pygame.K_w:
+                if event.key == pygame.K_UP or event.key == pygame.K_w or event.key == pygame.K_SPACE:
                     return True
         return False
 
