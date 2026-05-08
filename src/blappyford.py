@@ -1,6 +1,8 @@
 import pygame
 import math
 import random
+import glob
+import os
 
 # Constants
 
@@ -45,7 +47,7 @@ class Player():
         self.rect.clamp_ip(pygame.Rect(0,0, WIDTH, HEIGHT))
 
     def draw(self, surface):
-        pygame.draw.rect(surface, (0,255,0), self.rect, border_radius = 2)
+        pygame.draw.rect(surface, (0,200,0), self.rect, border_radius = 2)
         
 
 
@@ -66,7 +68,7 @@ class Wall():
         self.rect = pygame.Rect(self.pos[0],self.pos[1],WIDTH/30,self.height)
 
     def is_offscreen(self):
-        wall_is_offscreen = (self.pos[0] <= 0)
+        wall_is_offscreen = (self.pos[0] <= 0-WIDTH/20)
         return wall_is_offscreen
 
     def draw(self,surface):
@@ -157,7 +159,7 @@ def main():
             if spawn_interval >= MIN_SPAWN_TIME:
                 spawn_interval = 4 - (0.2*(points//5))
             spawn_timer += dt
-            if spawn_timer >= spawn_interval:
+            if spawn_timer >= (spawn_interval+(random.randrange(-2,2)/10)):
                 spawn_timer = 0.0
                 walls.append(WallPair(points))
             
