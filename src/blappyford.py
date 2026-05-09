@@ -29,7 +29,7 @@ class Particle():
         self.color = pygame.Color(0,100,0,255 * (1 - self.age/self.life))
         self.rect.scale_by_ip(1 - (self.age/self.life))
         self.rect.centery = self.pos[1]+self.size/(1 - self.age/self.life)/2
-        self.rect.x -= self.speed*0.7*dt
+        self.rect.x -= self.speed*0.4*dt
         if self.age > self.life:
             self.dead = True
     
