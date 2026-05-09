@@ -68,6 +68,7 @@ class Player():
         self.rect.x = int(round(self.rect.x + dx))
         self.rect.y = int(round(self.rect.y - self.vely))
         self.rect.clamp_ip(pygame.Rect(0,0, WIDTH, HEIGHT))
+        self.update_trail(dt)
     
     def update_trail(self,dt):
         new_particle = Particle((self.rect.x, self.rect.y), self.rect.width, 500)
