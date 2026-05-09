@@ -39,21 +39,21 @@ class Player_Particle():
         pygame.draw.rect(surface, self.color, self.rect, border_radius = 2)
 
 class Wall_Particle():
-    def __init__(self,pos=(0,0),width=100,height=100,life=500):
+    def __init__(self,pos=(0,0),width=100,height=100,life=0.5):
         self.pos = pos
         self.width = width
         self.height = height
         self.age = 0
         self.life = life
-        self.alpha = 200
+        self.alpha = 100
         self.color = pygame.Color(200,0,0)
         self.dead = False
-        self.surf = pygame.Surface(self.width,self.height)
+        self.surf = pygame.Surface((self.width,self.height))
         self.surf.fill(self.color)
     
     def update(self,dt):
         self.age += dt
-        self.alpha = 200 * (1-self.age/self.life)
+        self.alpha = 100 * (1-(self.age/self.life))
         if self.age > self.life:
             self.dead = True
     
@@ -127,13 +127,15 @@ class Wall():
     def update (self,dt):
         self.pos[0] -= self.speed*dt   
         self.rect = pygame.Rect(self.pos[0],self.pos[1],WIDTH/30,self.height)
-        self.update_trail(dt)
+        if self.pos[1]< HEIGHT:            
+            self.update_trail(dt)
     
     def update_trail(self,dt):
-        new_particle = Wall_Particle((self.rect.x, self.rect.y), self.rect.width, self.rect.height, 500)
+        new_particle = Wall_Particle((self.rect.x, self.rect.y), self.rect.width, self.rect.height, 0.3)
         self.trail.insert(0,new_particle)
-        for idx, particle in enumerate(self.trail):
+        for particle in self.trail:
             particle.update(dt)
+        for idx, particle in enumerate(self.trail):
             if particle.dead:
                 del self.trail[idx]    
 
