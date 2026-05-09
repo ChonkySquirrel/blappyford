@@ -145,7 +145,7 @@ class Wall():
     def draw(self,surface):
         for particle in self.trail:
             particle.draw(surface)
-        pygame.draw.rect(surface,(200,0,0),self.rect)
+        pygame.draw.rect(surface,(200,0,0),self.rect,border_radius=2)
 
 class WallPair():
     def __init__(self,points):
