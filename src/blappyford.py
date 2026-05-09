@@ -223,14 +223,16 @@ def main():
             wall.draw(screen)
         if game_over:
             overlay_back = pygame.Rect(WIDTH/5,HEIGHT/5*2,WIDTH*0.6,HEIGHT*0.2)
-            pygame.draw.rect(screen,(0,0,0),overlay_back,border_radius = 6)
+            pygame.draw.rect(screen,(60,40,40),overlay_back,border_radius = 6)
             game_overlay = font_large.render(f"GAME OVER - FINAL SCORE: {points} - JUMP TO RESTART",True,(255,255,255))
             screen.blit(game_overlay,game_overlay.get_rect(center=(WIDTH//2,HEIGHT//2)))
         if not game_over:
             score = font_huge.render(f"SCORE: {points}",True,(255,255,255))
             score_back_width = 160 + 20*(len(str(points)))
             score_back = pygame.Rect((WIDTH/5*4)-10,4,score_back_width,68)
-            controls = font.render("Arrows / AD to move - Jump with Space / W / Up",True,(120,120,120))
+            controls_back = pygame.Rect(6,6,380,24)
+            controls = font.render("Arrows / AD to move - Jump with Space / W / Up",True,(200,200,200))
+            pygame.draw.rect(screen,(45,45,45),controls_back,border_radius=3)
             screen.blit(controls, (12, 12))
             pygame.draw.rect(screen,(45,45,45),score_back,border_radius=3)
             screen.blit(score, (WIDTH/5*4,24))
