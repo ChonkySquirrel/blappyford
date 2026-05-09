@@ -217,9 +217,9 @@ def main():
          
         # Render & Display
         screen.fill(SCREEN_COLOR)
+        player.draw(screen)
         for wall in walls:
             wall.draw(screen)
-        player.draw(screen)
         if game_over:
             overlay_back = pygame.Rect(WIDTH/5,HEIGHT/5*2,WIDTH*0.6,HEIGHT*0.2)
             pygame.draw.rect(screen,(0,0,0),overlay_back,border_radius = 6)
