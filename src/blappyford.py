@@ -6,7 +6,7 @@ import random
 
 WIDTH = 1080
 HEIGHT = 720
-SCREEN_COLOR = (0,0,0)
+SCREEN_COLOR = (17,17,38)
 MAX_WALL_SIZE = HEIGHT-100
 MAX_WALL_SPEED = 200
 MIN_WALL_GAP = 70
@@ -289,9 +289,9 @@ def main():
             score_back = pygame.Rect((WIDTH/5*4)-10,4,score_back_width,68)
             controls_back = pygame.Rect(6,6,380,24)
             controls = font.render("Arrows / AD to move - Jump with Space / W / Up",True,(200,200,200))
-            pygame.draw.rect(screen,(45,45,45),controls_back,border_radius=3)
+            pygame.draw.rect(screen,(45,45,70),controls_back,border_radius=3)
             screen.blit(controls, (12, 12))
-            pygame.draw.rect(screen,(45,45,45),score_back,border_radius=3)
+            pygame.draw.rect(screen,(45,45,70),score_back,border_radius=3)
             screen.blit(score, (WIDTH/5*4,24))
         pygame.display.flip()
         dt = clock.tick(30)/1000.0
