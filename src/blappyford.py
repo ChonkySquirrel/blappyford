@@ -19,13 +19,13 @@ class Particle():
         self.biggest_size = size
         self.age = 0
         self.life = life
-        self.color = pygame.Color(0,200,0,255)
+        self.color = pygame.Color(0,100,0,255)
         self.rect = pygame.Rect(self.pos[0],self.pos[1],self.size,self.size)
         self.dead = False
 
     def update(self,dt):
         self.age += dt
-        self.color = pygame.Color(0,200,0,255 * (1 - self.age/self.life))
+        self.color = pygame.Color(0,100,0,255 * (1 - self.age/self.life))
         self.rect.scale_by_ip(1 - (self.age/self.life))
         if self.age > self.life:
             self.dead = True
