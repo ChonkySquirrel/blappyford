@@ -12,6 +12,30 @@ MAX_WALL_SPEED = 200
 MIN_WALL_GAP = 70
 MIN_SPAWN_TIME = 1.6
 
+class Particle():
+    def __init__(self, pos=(0,0), size=15, life=500):
+        self.pos = pos
+        self.size = size
+        self.biggest_size = size
+        self.age = 0
+        self.life = life
+        self.color = pygame.Color(0,200,0,255)
+        self.rect = pygame.Rect(self.pos[0],self.pos[1],self.size,self.size)
+        self.dead = False
+
+    def update(self,dt):
+        self.age += dt
+        self.color = pygame.Color(0,200,0,255 * (1 - self.age/self.life))
+        self.rect.scale_by_ip(1 - (self.age/self.life))
+        if self.age > self.life:
+            self.dead = True
+    
+    def draw(self, surface):
+        if self.dead:
+            return
+        pygame.draw.rect(surface, self.color, self.rect, border_radius = 2)
+
+
 class Player():
     def __init__(self):
         x = WIDTH//30
@@ -22,6 +46,7 @@ class Player():
         self.jump_force = 8
         self.gravity = 15
         self.jumpsound = pygame.mixer.Sound("jumpsound.wav")
+        self.trail = []
     
     def _is_jumping (self, events):
         for event in events:
@@ -43,11 +68,19 @@ class Player():
         self.rect.x = int(round(self.rect.x + dx))
         self.rect.y = int(round(self.rect.y - self.vely))
         self.rect.clamp_ip(pygame.Rect(0,0, WIDTH, HEIGHT))
+    
+    def update_trail(self,dt):
+        new_particle = Particle((self.rect.x, self.rect.y), self.rect.width, 500)
+        self.trail.insert(0,new_particle)
+        for idx, particle in enumerate(self.trail):
+            particle.update(dt)
+            if particle.dead:
+                del self.trail[idx]
 
     def draw(self, surface):
         pygame.draw.rect(surface, (0,200,0), self.rect, border_radius = 2)
-        
-
+        for particle in self.trail:
+            particle.draw(surface)
 
 class Wall():
     def __init__(self, height, altitude, points):
