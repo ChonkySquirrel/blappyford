@@ -13,12 +13,13 @@ MIN_WALL_GAP = 70
 MIN_SPAWN_TIME = 1.6
 
 class Particle():
-    def __init__(self, pos=(0,0), size=15, life=500):
+    def __init__(self, pos=(0,0), size=15, life=500, speed=0):
         self.pos = pos
         self.size = size
         self.biggest_size = size
         self.age = 0
         self.life = life
+        self.speed = speed
         self.color = pygame.Color(0,100,0,255)
         self.rect = pygame.Rect(self.pos[0],self.pos[1],self.size,self.size)
         self.dead = False
@@ -27,7 +28,8 @@ class Particle():
         self.age += dt
         self.color = pygame.Color(0,100,0,255 * (1 - self.age/self.life))
         self.rect.scale_by_ip(1 - (self.age/self.life))
-        self.rect.center = (self.pos[0]+self.size/(1 - self.age/self.life)/2,self.pos[1]+self.size/(1 - self.age/self.life)/2)
+        self.rect.centery = self.pos[1]+self.size/(1 - self.age/self.life)/2
+        self.rect.x -= self.speed*0.7*dt
         if self.age > self.life:
             self.dead = True
     
@@ -57,7 +59,7 @@ class Player():
                     return True
         return False
 
-    def update(self, keys, tap, dt):
+    def update(self, keys, tap, dt, spd):
         dx = 0.0
         self.vely -= self.gravity*dt
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
@@ -69,10 +71,10 @@ class Player():
         self.rect.x = int(round(self.rect.x + dx))
         self.rect.y = int(round(self.rect.y - self.vely))
         self.rect.clamp_ip(pygame.Rect(0,0, WIDTH, HEIGHT))
-        self.update_trail(dt)
+        self.update_trail(dt, spd)
     
-    def update_trail(self,dt):
-        new_particle = Particle((self.rect.x, self.rect.y), self.rect.width, 500)
+    def update_trail(self,dt,spd):
+        new_particle = Particle((self.rect.x, self.rect.y), self.rect.width, 500,spd)
         self.trail.insert(0,new_particle)
         for idx, particle in enumerate(self.trail):
             particle.update(dt)
@@ -119,6 +121,7 @@ class WallPair():
         self.cleared = False
         self.pos = WIDTH
         self._make_wall_pair()
+        self.speed = self.walls[0].speed
     
     def _gap_snap(self):
         if self.gap < MIN_WALL_GAP:
@@ -165,9 +168,9 @@ def main():
     dt = 0.0
     pointsound = pygame.mixer.Sound("pointget.wav")
     deathsound = pygame.mixer.Sound("deathsound.wav")
-    walls = []
-    spawn_timer = 4
     points = 0
+    walls = [WallPair(points)]
+    spawn_timer = 0
     player = Player()
     game_over = False
     spawn_interval = 4
@@ -183,13 +186,13 @@ def main():
                 if event.key == pygame.K_UP or event.key == pygame.K_w or event.key == pygame.K_SPACE:
                     if game_over:
                         player = Player()
-                        walls = []
                         points = 0
-                        spawn_timer = 4
+                        walls = [WallPair(points)]
+                        spawn_timer = 0
                         game_over = False
         # Game Logic
         if not game_over:
-            player.update(keys,inputs,dt)
+            player.update(keys,inputs,dt,walls[0].speed)
             if spawn_interval >= MIN_SPAWN_TIME:
                 spawn_interval = 4 - (0.2*(points//5))
             spawn_timer += dt
