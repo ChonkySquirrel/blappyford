@@ -156,10 +156,18 @@ class WallPair():
         for wall in self.walls:
             wall.draw(surface)
 
+def play_message():
+    try:
+        with open("playmessages.txt", 'r') as collection:
+            message_list = list(collection)
+            return random.choice(message_list)
+    except:
+        return "Blappyford"
+
 def main():
     pygame.init()
     pygame.mixer.init()
-    pygame.display.set_caption("Adventures of Blappyford")
+    pygame.display.set_caption(play_message())
     screen = pygame.display.set_mode((WIDTH,HEIGHT))
     clock = pygame.time.Clock()
     font = pygame.font.Font(None,24)
@@ -190,6 +198,7 @@ def main():
                         walls = [WallPair(points)]
                         spawn_timer = 0
                         game_over = False
+                        pygame.display.set_caption(play_message())
         # Game Logic
         if not game_over:
             player.update(keys,inputs,dt,walls[0].speed)
