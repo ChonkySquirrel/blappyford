@@ -79,9 +79,9 @@ class Player():
                 del self.trail[idx]
 
     def draw(self, surface):
-        pygame.draw.rect(surface, (0,200,0), self.rect, border_radius = 2)
         for particle in self.trail:
             particle.draw(surface)
+        pygame.draw.rect(surface, (0,200,0), self.rect, border_radius = 2)
 
 class Wall():
     def __init__(self, height, altitude, points):
