@@ -144,7 +144,6 @@ class WallPair():
         return False
 
     def clear(self):
-        print("Obstacle Cleared!")
         self.cleared = True
 
     def is_offscreen(self):
@@ -206,14 +205,12 @@ def main():
                     wall.clear()
                     points += 1
                     pointsound.play()
-                    print (f"Point earned! Now at {points} points!")
                 wall.update_walls(dt)
             for wall in walls:
                 for rect in wall.rects:
                     if player.rect.colliderect(rect):
                         game_over = True
                         deathsound.play()
-                        print("OUCH!")
                         break
          
         # Render & Display
