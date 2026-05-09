@@ -243,6 +243,7 @@ def main():
                         points = 0
                         walls = [WallPair(points)]
                         spawn_timer = 0
+                        spawn_interval = 4
                         game_over = False
                         pygame.display.set_caption(play_message())
         # Game Logic
