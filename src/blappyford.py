@@ -164,6 +164,14 @@ def play_message():
     except:
         return "Blappyford"
 
+def death_message():
+    try:
+        with open("deathmessages.txt", 'r') as collection:
+            message_list = list(collection)
+            return random.choice(message_list)
+    except:
+        return "Blappyford"
+
 def main():
     pygame.init()
     pygame.mixer.init()
@@ -223,6 +231,7 @@ def main():
                     if player.rect.colliderect(rect):
                         game_over = True
                         deathsound.play()
+                        pygame.display.set_caption(death_message())
                         break
          
         # Render & Display
