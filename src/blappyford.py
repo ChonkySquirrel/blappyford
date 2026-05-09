@@ -12,7 +12,7 @@ MAX_WALL_SPEED = 200
 MIN_WALL_GAP = 70
 MIN_SPAWN_TIME = 1.6
 
-class Particle():
+class Player_Particle():
     def __init__(self, pos=(0,0), size=15, life=500, speed=0):
         self.pos = pos
         self.size = size
@@ -26,7 +26,7 @@ class Particle():
 
     def update(self,dt):
         self.age += dt
-        self.color = pygame.Color(0,100,0,255 * (1 - self.age/self.life))
+        self.color = pygame.Color(0,100*(1 - self.age/self.life),0,100)
         self.rect.scale_by_ip(1 - (self.age/self.life))
         self.rect.centery = self.pos[1]+self.size/(1 - self.age/self.life)/2
         self.rect.x -= self.speed*0.4*dt
@@ -37,6 +37,31 @@ class Particle():
         if self.dead:
             return
         pygame.draw.rect(surface, self.color, self.rect, border_radius = 2)
+
+class Wall_Particle():
+    def __init__(self,pos=(0,0),width=100,height=100,life=500):
+        self.pos = pos
+        self.width = width
+        self.height = height
+        self.age = 0
+        self.life = life
+        self.alpha = 200
+        self.color = pygame.Color(200,0,0)
+        self.dead = False
+        self.surf = pygame.Surface(self.width,self.height)
+        self.surf.fill(self.color)
+    
+    def update(self,dt):
+        self.age += dt
+        self.alpha = 200 * (1-self.age/self.life)
+        if self.age > self.life:
+            self.dead = True
+    
+    def draw(self,surface):
+        if self.dead:
+            return
+        self.surf.set_alpha(self.alpha)
+        surface.blit(self.surf,self.pos)
 
 
 class Player():
@@ -74,7 +99,7 @@ class Player():
         self.update_trail(dt, spd)
     
     def update_trail(self,dt,spd):
-        new_particle = Particle((self.rect.x, self.rect.y), self.rect.width, 500,spd)
+        new_particle = Player_Particle((self.rect.x, self.rect.y), self.rect.width, 500,spd)
         self.trail.insert(0,new_particle)
         for idx, particle in enumerate(self.trail):
             particle.update(dt)
@@ -93,6 +118,7 @@ class Wall():
         self._speed_snap()
         self.pos = ([WIDTH,altitude])
         self.rect = pygame.Rect(self.pos[0],self.pos[1],WIDTH/20,self.height)
+        self.trail = []
     
     def _speed_snap(self):
         if self.speed > MAX_WALL_SPEED:
@@ -101,12 +127,23 @@ class Wall():
     def update (self,dt):
         self.pos[0] -= self.speed*dt   
         self.rect = pygame.Rect(self.pos[0],self.pos[1],WIDTH/30,self.height)
+        self.update_trail(dt)
+    
+    def update_trail(self,dt):
+        new_particle = Wall_Particle((self.rect.x, self.rect.y), self.rect.width, self.rect.height, 500)
+        self.trail.insert(0,new_particle)
+        for idx, particle in enumerate(self.trail):
+            particle.update(dt)
+            if particle.dead:
+                del self.trail[idx]    
 
     def is_offscreen(self):
         wall_is_offscreen = (self.pos[0] <= 0-WIDTH/20)
         return wall_is_offscreen
 
     def draw(self,surface):
+        for particle in self.trail:
+            particle.draw(surface)
         pygame.draw.rect(surface,(200,0,0),self.rect)
 
 class WallPair():
